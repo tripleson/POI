@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Reflection;
 using MediatR;
+using FluentValidation;
+using Application.Behaviour;
 
 namespace Application
 {
@@ -15,6 +17,10 @@ namespace Application
         {
             services.AddMediatR(Assembly.GetExecutingAssembly());
             services.AddAutoMapper(Assembly.GetExecutingAssembly());
+            services.AddValidatorsFromAssembly(Assembly.GetExecutingAssembly());
+
+            //MediatR Pipeline
+            services.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehaviourcs<,>));
 
             return services;
         }

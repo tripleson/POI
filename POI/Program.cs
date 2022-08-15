@@ -4,15 +4,21 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Swashbuckle.AspNetCore.Filters;
 using System.Text;
+using POI;
+using POI.Filter;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+builder.Services.AddHttpContextAccessor();
 
+builder.Services.RegisterWebUIServices();
 builder.Services.RegisterInfrastructureServices();
 builder.Services.RegisterApplicationServices();
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options => 
+    options.Filters.Add<ApiExceptionFilter>());
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(options =>

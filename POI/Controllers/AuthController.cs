@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Application.Interface;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using POI.DTO;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -11,21 +14,39 @@ namespace POI.Controllers
     public class AuthController : ControllerBase
     {
         private readonly IConfiguration _config;
+        private readonly ICurrentUser _currentUser;
 
-        public AuthController(IConfiguration config)
+        public AuthController(IConfiguration config,
+            ICurrentUser currentUser)
         {
             _config = config;
+            _currentUser = currentUser;
         }
 
         [HttpGet]
-        public string Authenticate()
+        public string Authenticate([FromQuery] LogInDTO logInDTO)
         {
-            return GenerateToken();
+            return GenerateToken(logInDTO);
         }
 
-        private string GenerateToken()
+        [Authorize]
+        [HttpGet]
+        public IActionResult GetInfo()
         {
-            var claims = new List<Claim>();
+            return Ok(new
+            {
+                _currentUser.UserId,
+                _currentUser.FullName,
+            });
+        }
+
+        private string GenerateToken(LogInDTO logInDTO)
+        {
+            var claims = new List<Claim> 
+            {
+                new Claim(ClaimTypes.Name, logInDTO.name),
+                new Claim(ClaimTypes.NameIdentifier, logInDTO.id.ToString()),
+            };
 
             var key = new SymmetricSecurityKey(
                 System.Text.Encoding.UTF8.GetBytes(_config.GetValue<string>("Key")));
