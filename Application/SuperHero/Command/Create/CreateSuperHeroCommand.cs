@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using FluentValidation;
 
 namespace Application.SuperHero.Command.Create
 {
@@ -38,6 +39,24 @@ namespace Application.SuperHero.Command.Create
             await _context.SaveChangeAsync();
 
             return Unit.Value;
+        }
+    }
+
+    public class CreateSuperHeroCommandValidator : AbstractValidator<CreateSuperHeroCommand>
+    {
+        public CreateSuperHeroCommandValidator()
+        {
+            RuleFor(a => a.Age)
+                .GreaterThanOrEqualTo(18)
+                .WithMessage("Age should be greater than or equal to 18");
+
+            RuleFor(a => a.Name)
+                .NotEmpty()
+                .WithMessage("Name length should be not empty okeeeeeeee");
+
+            RuleFor(a => a.Name)
+                .MaximumLength(10)
+                .WithMessage("Name length should be less than 10");
         }
     }
 }
