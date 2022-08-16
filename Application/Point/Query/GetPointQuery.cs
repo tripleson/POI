@@ -5,11 +5,17 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Application.Point.Query;
 
-public class GetPointQuery : IRequest<List<PointDTO>>
+public class GetPointQuery : IRequest<List<Domain.Entities.Point>>
 {
+    public decimal Longitude { get; set; }
+    public decimal Latitude { get; set; }
+    public string? Title { get; set; }
+    public string? Address { get; set; }
+    public string? Phone { get; set; }
+    public string? Website { get; set; }
 }
 
-public class GetPointQueryHandler : IRequestHandler<GetPointQuery, List<PointDTO>>
+public class GetPointQueryHandler : IRequestHandler<GetPointQuery, List<Domain.Entities.Point>>
 {
     private readonly IMapper _mapper;
     private readonly IPOIContext _poiContext;
@@ -21,12 +27,40 @@ public class GetPointQueryHandler : IRequestHandler<GetPointQuery, List<PointDTO
         _poiContext = poiContext;
     }
     
-    public async Task<List<PointDTO>> Handle(GetPointQuery request, CancellationToken cancellationToken)
+    public async Task<List<Domain.Entities.Point>> Handle(GetPointQuery request, CancellationToken cancellationToken)
     {
-        var data = await _poiContext.Points.ToListAsync();
+        var data = _poiContext.Points.AsQueryable();
 
-        var dto = _mapper.Map<List<PointDTO>>(data);
+        if (request.Longitude != 0)
+        {
+            data = data.Where(a => a.Longitude == request.Longitude);
+        }
 
-        return dto;
+        if (request.Latitude != 0)
+        {
+            data = data.Where(a => a.Latitude == request.Latitude);
+        }
+
+        if (!string.IsNullOrEmpty(request.Title))
+        {
+            data = data.Where(a => a.Title == request.Title);
+        }
+        
+        if (!string.IsNullOrEmpty(request.Address))
+        {
+            data = data.Where(a => a.Address == request.Address);
+        }
+        
+        if (!string.IsNullOrEmpty(request.Phone))
+        {
+            data = data.Where(a => a.Phone == request.Phone);
+        }
+        
+        if (!string.IsNullOrEmpty(request.Website))
+        {
+            data = data.Where(a => a.Website == request.Website);
+        }
+        
+        return await data.ToListAsync();
     }
 }
