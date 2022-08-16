@@ -1,4 +1,5 @@
 ﻿using Application.Interface;
+using Application.Point.Query;
 using FluentValidation;
 using MediatR;
 
@@ -11,15 +12,22 @@ public class UpdatePointCommand : CreatePointCommand
 public class UpdatePointCommandHandler : IRequestHandler<UpdatePointCommand>
 {
     private readonly IPOIContext _poiContext;
+    private readonly IMediator _mediator;
 
-    public UpdatePointCommandHandler(IPOIContext poiContext)
+    public UpdatePointCommandHandler(IPOIContext poiContext,
+        IMediator mediator)
     {
         _poiContext = poiContext;
+        _mediator = mediator;
     }
     
     public async Task<Unit> Handle(UpdatePointCommand request, CancellationToken cancellationToken)
     {
-        var point = await _poiContext.Points.FindAsync(request.Latitude, request.Longitude);
+        var point = await _mediator.Send(new GetPointByLoLa()
+        {
+            Longtitude = request.Longitude,
+            Latitude = request.Latitude,
+        });
 
         if (point == null)
             throw new System.Exception("Không tìm thấy tọa độ phù hợp");
