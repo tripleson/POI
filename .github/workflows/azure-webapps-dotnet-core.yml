@@ -97,5 +97,5 @@ jobs:
           username: tripleson
           password: S@ovui123456
           protocol: ftps
-          local-dir: ${{env.DOTNET_ROOT}}/myapp
-          server-dir: C:/Services/POI
+          local-dir: ${{env.DOTNET_ROOT}}/myapp/
+          server-dir: C:/Services/POI/
