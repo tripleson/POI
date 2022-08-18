@@ -99,4 +99,4 @@ jobs:
           PORT: 22
           ARGS: --delete
           LOCAL_DIR: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
-          REMOTE_DIR: C:/Serivces/POI
+          REMOTE_DIR: ../../Serivces/POI
