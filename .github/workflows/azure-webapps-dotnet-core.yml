@@ -89,12 +89,12 @@ jobs:
 #           package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
 
 
-      - name: 📂 Sync files
-        uses: SamKirkland/FTP-Deploy-Action@4.3.0
-        with:
-          server: 20.249.73.66
-          port: 22
-          username: tripleson
-          password: S@ovui123456
-          protocol: ftps
-          server-dir: C:/Services/POI/
+      - name: FTP-Deploy-Action
+        uses: SamKirkland/FTP-Deploy-Action@2.0.0
+        env:
+          FTP_SERVER: 20.249.73.66
+          FTP_USERNAME: tripleson
+          FTP_PASSWORD: S@ovui123456
+          METHOD: sftp
+          PORT: 22
+          ARGS: --delete
