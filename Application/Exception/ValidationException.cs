@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Exception
 {
-    public class ValidationException : System.Exception
+    public class ValidationException : System.Exception 
     {
         public IDictionary<string, string[]> Errors { get; }
 
